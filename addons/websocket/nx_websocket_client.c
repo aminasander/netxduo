@@ -1497,7 +1497,9 @@ UINT header_size = NX_WEBSOCKET_HEADER_NORMAL_SIZE;
 
     /* Fill the next byte for MASK and Payload length.  */
     *data_ptr = NX_WEBSOCKET_MASK;
-    if (packet_ptr -> nx_packet_length < 125)
+
+    // This number is the maximum amount of bytes that can fit in a single 8 bit int according to the rfc6455 specification for websockets without triggering a 16 bit or 64 bit length extension. See 5.2 in rfc6455 (https://datatracker.ietf.org/doc/html/rfc6455#page-33)
+    if (packet_ptr -> nx_packet_length <= 125)
     {
         *data_ptr |= (UCHAR)packet_ptr -> nx_packet_length;
         data_ptr++;
